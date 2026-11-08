@@ -1,8 +1,8 @@
-import { EXTENSION_ERROR_CODES, ExtensionError, prompt } from 'azot';
+import { ExtensionError, prompt, t } from 'azot';
+import { messages } from './messages';
 import {
   API_ROUTES,
   type FlexAuth,
-  type FlexUser,
   fetchUsers,
   getAuth,
   parseJsonResponse,
@@ -23,12 +23,12 @@ const createSendCodeBody = (login: string) => {
 const signIn = async (): Promise<FlexAuth> => {
   console.debug('Signing in FLEX...');
 
-  const { login } = await prompt('Вход в аккаунт FLEX', {
+  const { login } = await prompt(t(messages.signIn), {
     title: 'FLEX',
     form: {
       login: {
         type: 'text',
-        title: 'Введите e-mail или телефон',
+        title: t(messages.enterLogin),
         placeholder: 'user@example.com',
         required: true,
         autoFocus: true,
@@ -41,21 +41,18 @@ const signIn = async (): Promise<FlexAuth> => {
   const codeResponse = await postJson(API_ROUTES.sendCode, sendCodeBody);
   const codeData = await parseJsonResponse<{ detail?: string; send_type?: string }>(codeResponse);
   if (!codeResponse.ok || codeData?.detail) {
-    console.debug(JSON.stringify(codeData));
     throw new ExtensionError({
-      code: EXTENSION_ERROR_CODES.RATE_LIMITED,
-      message:
-        'Неверные данные для входа, или превышено количество попыток входа. Попробуйте позже, или смените IP.',
-      operation: 'auth',
+      code: 'RATE_LIMITED',
+      message: t(messages.loginFailed),
     });
   }
 
-  const { code } = await prompt('Подтверждение входа', {
+  const { code } = await prompt(t(messages.confirmLogin), {
     title: 'FLEX',
     form: {
       code: {
         type: 'text',
-        title: 'Введите код, пришедший вам в СМС или на почту',
+        title: t(messages.enterCode),
         required: true,
         autoFocus: true,
       },
@@ -66,12 +63,9 @@ const signIn = async (): Promise<FlexAuth> => {
   const response = await postJson(API_ROUTES.signIn, { ...sendCodeBody, code });
   const auth = await parseJsonResponse<{ token?: string; user?: { uuid?: string } }>(response);
   if (!response.ok || !auth?.token || !auth.user?.uuid) {
-    console.debug(JSON.stringify(auth));
     throw new ExtensionError({
-      code: EXTENSION_ERROR_CODES.AUTH_REQUIRED,
-      message:
-        'Неверные данные для входа, или превышено количество попыток входа. Попробуйте позже, или смените IP.',
-      operation: 'auth',
+      code: 'AUTH_REQUIRED',
+      message: t(messages.loginFailed),
     });
   }
 
@@ -94,7 +88,7 @@ const getAuthState = async () => {
   if (!user) {
     try {
       const profile = await fetchUsers();
-      user = (profile as FlexUser).username;
+      user = profile.username;
       if (user) saveAuth({ ...auth, username: user });
     } catch (error) {
       console.debug(`Failed to fetch FLEX profile: ${error}`);

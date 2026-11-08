@@ -1,4 +1,5 @@
-import { ExtensionError, EXTENSION_ERROR_CODES } from 'azot';
+import { ExtensionError, t } from 'azot';
+import { messages } from './messages';
 
 const BASE_URL = 'https://back-films.ru/api';
 
@@ -95,23 +96,19 @@ const assertResponseOk = async (response: Response) => {
   if (response.ok) return;
   if (response.status === 401) {
     throw new ExtensionError({
-      code: EXTENSION_ERROR_CODES.AUTH_REQUIRED,
-      message: 'Требуется вход в аккаунт FLEX. Войдите в аккаунт и повторите попытку.',
-      operation: 'request',
+      code: 'AUTH_REQUIRED',
+      message: t(messages.authRequired),
     });
   }
   if (response.status === 403) {
     throw new ExtensionError({
-      code: EXTENSION_ERROR_CODES.SUBSCRIPTION_REQUIRED,
-      message:
-        'На этом аккаунте нет прав для просмотра данного контента. Проверьте наличие подписки или купленного фильма.',
-      operation: 'request',
+      code: 'SUBSCRIPTION_REQUIRED',
+      message: t(messages.subscriptionRequired),
     });
   }
   throw new ExtensionError({
-    code: EXTENSION_ERROR_CODES.MEDIA_UNAVAILABLE,
-    message: `Запрос к FLEX завершился с ошибкой. Статус: ${response.status}`,
-    operation: 'request',
+    code: 'MEDIA_UNAVAILABLE',
+    message: t(messages.requestFailed, { status: response.status }),
   });
 };
 
@@ -126,9 +123,8 @@ export const request = async <T>(input: string, init: RequestInit = {}): Promise
   const data = await parseJsonResponse<T>(response);
   if (data === null) {
     throw new ExtensionError({
-      code: EXTENSION_ERROR_CODES.MEDIA_UNAVAILABLE,
-      message: `Не удалось обработать ответ FLEX от ${input}`,
-      operation: 'request',
+      code: 'MEDIA_UNAVAILABLE',
+      message: t(messages.invalidResponse, { url: input }),
     });
   }
   return data;

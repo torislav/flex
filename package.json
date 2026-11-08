@@ -5,17 +5,9 @@
     "streaming-services"
   ],
   "homepage": "https://kinoflex.ru/",
-  "license": "MIT",
   "author": {
     "name": "torislav"
   },
-  "contributors": [
-    {
-      "name": "Vitaly Gashkov",
-      "email": "vitalygashkov@vk.com",
-      "url": "https://github.com/vitalygashkov"
-    }
-  ],
   "files": [
     "dist",
     "icon.*",
@@ -31,20 +23,22 @@
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
-    "test": "vitest"
+    "test": "vitest run",
+    "manifest": "azot manifest --input flex.ts"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
-    "azot": "^5.0.0-alpha.81",
+    "azot": "^5.0.0-alpha.91",
     "oxfmt": "^0.66.0",
     "oxlint": "^1.81.0",
     "picomatch": "^4.0.7",
     "semver": "^7.8.5",
     "tree-kill": "^1.2.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.0"
+    "vitest": "^5.1.0"
   },
   "engines": {
-    "azot": ">=5.0.0-alpha.78"
+    "azot": ">=5.0.0-alpha.94",
+    "node": ">=24.22.1"
   }
 }

@@ -1,11 +1,17 @@
 {
   "manifestVersion": 1,
-  "displayName": "FLEX",
-  "shortName": "FLEX",
-  "matches": ["https://kinoflex.ru/*", "https://*.kinoflex.ru/*"],
-  "capabilities": {
-    "auth": {
-      "methods": ["interactive"]
+  "apiVersion": 3,
+  "title": "FLEX",
+  "modules": {
+    "flex": {
+      "kind": "provider",
+      "shortName": "FLEX",
+      "matches": [
+        "https://*.kinoflex.ru/*"
+      ],
+      "authMethods": [
+        "interactive"
+      ]
     }
   }
 }
