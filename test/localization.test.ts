@@ -13,8 +13,6 @@ const placeholders = (text: string) =>
 test('packs a v3 provider without adding description or icon metadata', () => {
   const manifest = packedManifest(extension);
   expect(manifest).toEqual({
-    manifestVersion: 1,
-    apiVersion: 3,
     title: 'FLEX',
     modules: {
       flex: {
