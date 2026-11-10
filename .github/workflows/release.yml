@@ -49,5 +49,4 @@ jobs:
             $PRERELEASE_FLAG \
             "${{ steps.pack_artifact.outputs.artifact_path }}" \
             "package.json" \
-            "manifest.json" \
-            "README.md"
+            "manifest.json"
